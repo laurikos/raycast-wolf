@@ -11,6 +11,8 @@ const FOV_ANGLE = 60 * (Math.PI / 180);
 const WALL_STRIP_WIDTH = 1;
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIP_WIDTH;
 
+const MINIMAP_SCALE_FACTOR = 0.3;
+
 class Grid {
   constructor() {
     this.layout = [
@@ -40,6 +42,8 @@ class Grid {
   render() {
     stroke("#222");
 
+    const finalTileSize = TILE_SIZE * MINIMAP_SCALE_FACTOR;
+
     for (let y = 0; y < MAP_ROWS; y++) {
       for (let x = 0; x < MAP_COLS; x++) {
 
@@ -48,10 +52,10 @@ class Grid {
         fill(color);
 
         rect(
-          x * TILE_SIZE,
-          y * TILE_SIZE,
-          TILE_SIZE,
-          TILE_SIZE
+          x * finalTileSize,
+          y * finalTileSize,
+          finalTileSize,
+          finalTileSize
         );
 
 
@@ -97,21 +101,29 @@ class Player {
   render() {
     noStroke();
     fill("#e35473");
-    circle(this.x, this.y, this.radius);
+
+    // Draw the player
+    circle(
+      MINIMAP_SCALE_FACTOR * this.x,
+      MINIMAP_SCALE_FACTOR * this.y,
+      MINIMAP_SCALE_FACTOR * this.radius
+    );
+
+    // for debug purposes we can draw a line that shows the direction the player is facing
     stroke("#e35473");
     if (false) {
       line(
         // line start x position
-        this.x,
+        MINIMAP_SCALE_FACTOR * this.x,
 
         // line start y position
-        this.y,
+        MINIMAP_SCALE_FACTOR * this.y,
 
         // line end x position 20 pixels away from start
-        this.getNewX(this.rotationAngle, PlayerDirectionLineLen),
+        MINIMAP_SCALE_FACTOR * (this.getNewX(this.rotationAngle, PlayerDirectionLineLen)),
 
         // line end y position 20 pixels away from start
-        this.getNewY(this.rotationAngle, PlayerDirectionLineLen)
+        MINIMAP_SCALE_FACTOR * (this.getNewY(this.rotationAngle, PlayerDirectionLineLen))
       );
     }
   }
@@ -182,7 +194,7 @@ class Ray {
     return result;
   }
 
-  cast(columndID) {
+  cast() {
     const resultHorizontal = this.castHorizontalIntersection();
     const resultVertical = this.castVerticalIntersection();
 
@@ -384,10 +396,10 @@ class Ray {
     stroke(color(181, 50, 219, 80));
     // stroke(color(84, 94, 72, 80));
     line(
-      player.x,
-      player.y,
-      this.wallHitX,
-      this.wallHitY,
+      MINIMAP_SCALE_FACTOR * player.x,
+      MINIMAP_SCALE_FACTOR * player.y,
+      MINIMAP_SCALE_FACTOR * this.wallHitX,
+      MINIMAP_SCALE_FACTOR * this.wallHitY,
     );
   }
 
@@ -426,7 +438,6 @@ function keyReleased() {
 }
 
 function castRays() {
-  let columnID = 0;
 
   let rayAngle = player.rotationAngle - (FOV_ANGLE / 2);
 
@@ -437,31 +448,58 @@ function castRays() {
 
     let rayAngle = player.rotationAngle;
     let ray = new Ray(rayAngle);
-    ray.cast(columnID);
+    ray.cast();
     rays.push(ray);
-    columnID++;
 
     // console.log(`Ray angle: ${rayAngle}, Wall hit: ${ray.getWallHit()}, Facing: ${ray.getFacing()}, "Distance: ${ray.distance}, wasHitVertical: ${ray.wasHitVertical}`);
   } else {
 
     for (let i = 0; i < NUM_RAYS; i++) {
       const ray = new Ray(rayAngle);
-      ray.cast(columnID);
+      ray.cast();
       rays.push(ray);
 
       rayAngle += FOV_ANGLE / NUM_RAYS;
 
-      columnID++;
     }
   }
 }
 
-// --------------------------------------------------------------------------------------------
 
 const grid = new Grid();
 const player = new Player();
 
 let rays = [];
+
+function renderProjectedWalls() {
+  const baseWallColor = color(188, 235, 230, 100);
+  rays.forEach((ray, idx) => {
+    const rayDistance = ray.distance;
+
+    // correct the fish eye effect
+    const correctedAngle = ray.rayAngle - player.rotationAngle;
+    const correctedDistance = rayDistance * Math.cos(correctedAngle);
+
+    // get the distance and the height of the wall to be projected
+    const distanceProjectionPlane = (WINDOW_WIDTH / 2) / Math.tan(FOV_ANGLE / 2);
+    const projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjectionPlane;
+
+    // add some darker color to the wall based on the distance.
+    let wallColor = lerpColor(baseWallColor, color(0), map((correctedDistance), 0, WINDOW_WIDTH, 0, 1));
+    fill(wallColor);
+    noStroke();
+
+    rect(
+      idx * WALL_STRIP_WIDTH,
+      (WINDOW_HEIGHT / 2) - (projectedWallHeight / 2),
+      WALL_STRIP_WIDTH,
+      projectedWallHeight
+    );
+
+  });
+}
+
+// --------------------------------------------------------------------------------------------
 
 function setup() {
   createCanvas(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -473,8 +511,11 @@ function update() {
 }
 
 function draw() {
+  clear("#212121");
   update();
 
+  renderProjectedWalls();
+  // grid is actually the minimap:
   grid.render();
 
   rays.forEach(ray => {
