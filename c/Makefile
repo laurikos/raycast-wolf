@@ -4,11 +4,8 @@ CC ?= gcc
 # Compiler flags
 CFLAGS ?= -Wall -Wextra -pedantic -g -std=c11
 
-# Check if the compiler is Clang for specific flags
-ifeq ($(CC), clang)
-  CFLAGS += -fsanitize=address
-  LDFLAGS += -fsanitize=address
-endif
+# CFLAGS += -fsanitize=address
+# LDFLAGS += -fsanitize=address
 
 LDFLAGS += -lSDL2 -lm
 

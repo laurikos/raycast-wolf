@@ -7,7 +7,29 @@
 
 static int isRunning = 1;
 
-void doInput(void) {
+int playerPosX = 0;
+int playerPosY = 0;
+
+void drawRect(App *app, int x, int y, int w, int h, int r, int g, int b, int a) {
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = w;
+    rect.h = h;
+
+    SDL_SetRenderDrawBlendMode(app->renderer, a < 255 ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
+    SDL_SetRenderDrawColor(app->renderer, r, g, b, a);
+    SDL_RenderFillRect(app->renderer, &rect);
+}
+
+void setup(App *app) {
+    // doSetup();
+    playerPosX = 0;
+    playerPosY = 0;
+}
+
+// TODO: finish this function properly
+void processInput(App *app) {
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
@@ -57,9 +79,18 @@ void doInput(void) {
     // SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 }
 
-void doRender(App *app) {
+void update(App *app) {
+    // doUpdate();
+    playerPosX++;
+    playerPosY++;
+}
+
+void render(App *app) {
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
+
+    drawRect(app, playerPosX, playerPosY, 32, 32, 255, 0, 0, 255);
+
     SDL_RenderPresent(app->renderer);
 }
 
@@ -67,13 +98,12 @@ int main(int argc, char *argv[]) {
     App *app = App_new();
     App_initSDL(app);
 
-    while (1) {
-        doInput();
-        // doUpdate();
-        doRender(app);
-        if (!isRunning) {
-            break;
-        }
+    setup(app);
+
+    while (isRunning) {
+        processInput(app);
+        update(app);
+        render(app);
 
         SDL_Delay(16);
     }
