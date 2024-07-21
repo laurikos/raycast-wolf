@@ -18,6 +18,11 @@ App *App_new() {
     self->sdlInitialized = 0;
     self->deltaTime = 1.0;
     self->isRunning = 1;
+    self->mouse.x = 0;
+    self->mouse.y = 0;
+    self->mouse.buttonPressed = 0;
+    self->player.turnDirection = 0;
+    self->player.moveDirection = 0;
 
     return self;
 }

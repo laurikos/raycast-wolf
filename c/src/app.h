@@ -2,13 +2,23 @@
 #define _APP_H_
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_keyboard.h>
 
 typedef struct {
-        int isRunning;
-        SDL_Window *window;
-        SDL_Renderer *renderer;
-        int sdlInitialized;
-        double deltaTime;
+    int isRunning;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    int sdlInitialized;
+    double deltaTime;
+    struct {
+        int x;
+        int y;
+        int buttonPressed;
+    } mouse;
+    struct {
+        int turnDirection;
+        int moveDirection;
+    } player;
 } App;
 
 App *App_new();

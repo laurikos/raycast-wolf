@@ -5,23 +5,11 @@
 
 #include "app.h"
 #include "defs.h"
-#include "draw.h"
 #include "input.h"
+#include "logic.h"
+#include "scene.h"
 
-static int playerPosX = 0;
-static int playerPosY = 0;
-
-void setup(App *app) {
-    playerPosX = 0;
-    playerPosY = 0;
-}
-
-void logic(App *app) {
-    playerPosX = playerPosX + (2 * app->deltaTime);
-    playerPosY = playerPosY + (2 * app->deltaTime);
-}
-
-void update(App *app) {
+void update(App *app, Scene *scene) {
     double tmpDeltaTime;
 
     while (app->deltaTime > 1) {
@@ -29,19 +17,20 @@ void update(App *app) {
 
         app->deltaTime = 1;
 
-        logic(app);
+        doLogic(app, scene);
 
         app->deltaTime = (tmpDeltaTime - 1);
     }
 
-    logic(app);
+    doLogic(app, scene);
 }
 
-void render(App *app) {
+void render(App *app, Scene *scene) {
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
 
-    drawRect(app, playerPosX, playerPosY, 32, 32, 255, 0, 0, 255);
+    // drawRect(app, playerPosX, playerPosY, 32, 32, 255, 0, 0, 255);
+    drawScene(scene, app->renderer);
 
     SDL_RenderPresent(app->renderer);
 }
@@ -50,7 +39,12 @@ int main(int argc, char *argv[]) {
     App *app = App_new();
     App_initSDL(app);
 
-    setup(app);
+    // Setup the game
+    Scene *scene = prepareScene();
+    if (!scene) {
+        App_free(app);
+        return 1;
+    }
 
     long frameStart;
     long frameTime;
@@ -63,9 +57,9 @@ int main(int argc, char *argv[]) {
 
         processInput(app);
 
-        update(app);
+        update(app, scene);
 
-        render(app);
+        render(app, scene);
 
         frameTime = SDL_GetTicks() - frameStart;
 
@@ -78,6 +72,7 @@ int main(int argc, char *argv[]) {
         app->deltaTime = UPDATE_RATE * (SDL_GetTicks() - frameStart);
     }
 
+    destroyScene(scene);
     App_free(app);
 
     return 0;
