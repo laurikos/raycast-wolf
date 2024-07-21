@@ -1,6 +1,10 @@
+#ifndef DEFS_H
+#define DEFS_H
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
 
 #define TARGET_FPS 60
 #define UPDATE_RATE (TARGET_FPS * 1.0 / 1000)
+
+#endif  // DEFS_H_

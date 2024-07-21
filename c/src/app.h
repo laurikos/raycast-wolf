@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 typedef struct {
+        int isRunning;
         SDL_Window *window;
         SDL_Renderer *renderer;
         int sdlInitialized;

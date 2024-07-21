@@ -17,6 +17,8 @@ App *App_new() {
     self->window = NULL;
     self->sdlInitialized = 0;
     self->deltaTime = 1.0;
+    self->isRunning = 1;
+
     return self;
 }
 

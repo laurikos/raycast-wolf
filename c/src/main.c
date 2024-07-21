@@ -5,78 +5,15 @@
 
 #include "app.h"
 #include "defs.h"
-
-static int isRunning = 1;
+#include "draw.h"
+#include "input.h"
 
 static int playerPosX = 0;
 static int playerPosY = 0;
 
-void drawRect(App *app, int x, int y, int w, int h, int r, int g, int b, int a) {
-    SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
-    rect.w = w;
-    rect.h = h;
-
-    SDL_SetRenderDrawBlendMode(app->renderer, a < 255 ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
-    SDL_SetRenderDrawColor(app->renderer, r, g, b, a);
-    SDL_RenderFillRect(app->renderer, &rect);
-}
-
 void setup(App *app) {
     playerPosX = 0;
     playerPosY = 0;
-}
-
-// TODO: finish this function properly
-void processInput(App *app) {
-    SDL_Event event;
-
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_QUIT:
-                isRunning = 0;
-                break;
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    isRunning = 0;
-                }
-                break;
-
-                // case SDL_KEYDOWN:
-                // 	doKeyDown(&event.key);
-                // 	break;
-
-                // case SDL_KEYUP:
-                // 	doKeyUp(&event.key);
-                // 	break;
-
-                // case SDL_MOUSEBUTTONDOWN:
-                // 	doMouseDown(&event.button);
-                // 	break;
-
-                // case SDL_MOUSEBUTTONUP:
-                // 	doMouseUp(&event.button);
-                // 	break;
-
-                // case SDL_JOYBUTTONDOWN:
-                // 	doButtonDown(&event.jbutton);
-                // 	break;
-
-                // case SDL_JOYBUTTONUP:
-                // 	doButtonUp(&event.jbutton);
-                // 	break;
-
-                // case SDL_JOYAXISMOTION:
-                // 	doJoyAxis(&event.jaxis);
-                // 	break;
-
-            default:
-                break;
-        }
-    }
-
-    // SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 }
 
 void logic(App *app) {
@@ -121,11 +58,13 @@ int main(int argc, char *argv[]) {
     // bascially 16ms per frame with 60 FPS
     const long frameDelay = 1000 / TARGET_FPS;
 
-    while (isRunning) {
+    while (app->isRunning) {
         frameStart = SDL_GetTicks();
 
         processInput(app);
+
         update(app);
+
         render(app);
 
         frameTime = SDL_GetTicks() - frameStart;
