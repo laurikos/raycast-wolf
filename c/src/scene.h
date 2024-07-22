@@ -5,16 +5,18 @@
 
 #include "app.h"
 #include "player.h"
+#include "ray.h"
 
 typedef struct {
-    Player* player;
+    Player *player;
+    Rays *rays;
 } Scene;
 
-Scene* prepareScene();
-void destroyScene(Scene* scene);
+Scene *prepareScene();
+void destroyScene(Scene *scene);
 
-void drawScene(Scene* scene, SDL_Renderer* renderer);
+void drawScene(Scene *scene, SDL_Renderer *renderer);
 
-void updateScene(Scene* scene, App* app);
+void updateScene(Scene *scene, App *app);
 
 #endif  // _SCENE_H_

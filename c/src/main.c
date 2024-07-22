@@ -2,6 +2,7 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
+#include <stdio.h>
 
 #include "app.h"
 #include "defs.h"
@@ -29,7 +30,6 @@ void render(App *app, Scene *scene) {
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
 
-    // drawRect(app, playerPosX, playerPosY, 32, 32, 255, 0, 0, 255);
     drawScene(scene, app->renderer);
 
     SDL_RenderPresent(app->renderer);
@@ -45,6 +45,8 @@ int main(int argc, char *argv[]) {
         App_free(app);
         return 1;
     }
+
+    printf("Game started\n\tSCREEN_WIDTH: %d\n\tSCREEN_HEIGHT: %d\n", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     long frameStart;
     long frameTime;

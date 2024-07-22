@@ -44,7 +44,7 @@ void updatePlayer(Player* player, int turnDirection, int moveDirection, float de
     float newPlayerX = player->x + cos(player->rotation) * moveStep;
     float newPlayerY = player->y + sin(player->rotation) * moveStep;
 
-    if (!isWall(newPlayerX, newPlayerY)) {
+    if (!getMapTileAtCoords(newPlayerX, newPlayerY)) {
         player->x = newPlayerX;
         player->y = newPlayerY;
     }

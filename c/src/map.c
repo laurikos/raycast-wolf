@@ -27,7 +27,7 @@ void drawMap(SDL_Renderer *renderer) {
             int tileY = y * TILE_SIZE;
 
             // For now every map tile is either black or white
-            int tileColor = getMapTileAt(y, x) != 0 ? 255 : 0;
+            int tileColor = getMapTileAtIndex(y, x) != 0 ? 255 : 0;
 
             drawRect(renderer, tileX * MINIMAP_SCALE_FACTOR, tileY * MINIMAP_SCALE_FACTOR,
                      TILE_SIZE * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR, tileColor,
@@ -36,7 +36,7 @@ void drawMap(SDL_Renderer *renderer) {
     }
 }
 
-int getMapTileAt(int row, int col) {
+int getMapTileAtIndex(int row, int col) {
     if (row >= 0 && row < MAP_NUM_ROWS && col >= 0 && col < MAP_NUM_COLS) {
         return map[row][col];
     }
@@ -48,4 +48,6 @@ int getMapTileAt(int row, int col) {
 // Check if the given coordinates are inside a wall tile
 // The coordinates are in world space and they need to be converted to map space
 // thats where the floor (x / TILE_SIZE) comes in
-int isWall(float x, float y) { return getMapTileAt(floor(y / TILE_SIZE), floor(x / TILE_SIZE)); }
+int getMapTileAtCoords(float x, float y) {
+    return getMapTileAtIndex((int)floor(y / TILE_SIZE), (int)floor(x / TILE_SIZE));
+}
