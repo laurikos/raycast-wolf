@@ -157,8 +157,8 @@ void castRay(Ray *ray, int stripID, float playerX, float playerY, RayIntercept i
         }
     }
 
-    float horizontalHitDistance = 9999999.999;
-    float verticalHitDistance = 9999999.999;
+    float horizontalHitDistance = 0.0f;
+    float verticalHitDistance = 0.0f;
 
     if (interceptType == RAY_HORIZONTAL) {
         horizontalHitDistance =
