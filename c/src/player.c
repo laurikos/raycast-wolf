@@ -24,13 +24,22 @@ Player* createPlayer(float x, float y, float w, float h, float rotationSpeed, fl
 
 void playerFree(Player* player) { free(player); }
 
+// drawPlayer is a function that draws the player on the minimap.
 void drawPlayer(Player* player, SDL_Renderer* renderer) {
-    drawRect(renderer, player->x * MINIMAP_SCALE_FACTOR, player->y * MINIMAP_SCALE_FACTOR,
-             player->w * MINIMAP_SCALE_FACTOR, player->h * MINIMAP_SCALE_FACTOR, 180, 40, 5, 255);
+    // Rendering starts from the top left corner coordinates of the player
+    // so let's center this by shifting the coordinates by half of the player's width and height
+    const float playerCenterX = player->x - player->w / 2;
+    const float playerCenterY = player->y - player->h / 2;
 
-    drawLineF(renderer, player->x * MINIMAP_SCALE_FACTOR, player->y * MINIMAP_SCALE_FACTOR,
-              (player->x + cos(player->rotation) * 40) * MINIMAP_SCALE_FACTOR,
-              (player->y + sin(player->rotation) * 40) * MINIMAP_SCALE_FACTOR, 180, 40, 5, 255);
+    drawRect(renderer, playerCenterX * MINIMAP_SCALE_FACTOR, playerCenterY * MINIMAP_SCALE_FACTOR,
+             player->w * MINIMAP_SCALE_FACTOR, player->h * MINIMAP_SCALE_FACTOR, 20, 40, 190, 255);
+
+    // The purpose of this line was just to draw a line from the player to the direction it is
+    // facing. now that we draw the rays, we don't need this line anymore... (maybe ? for debugging
+    // purposes) drawLineF(renderer, player->x * MINIMAP_SCALE_FACTOR, player->y *
+    // MINIMAP_SCALE_FACTOR,
+    //           (player->x + cos(player->rotation) * 40) * MINIMAP_SCALE_FACTOR,
+    //           (player->y + sin(player->rotation) * 40) * MINIMAP_SCALE_FACTOR, 180, 40, 5, 255);
 }
 
 void updatePlayer(Player* player, int turnDirection, int moveDirection, float deltaTime) {

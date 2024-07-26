@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     App_initSDL(app);
 
     // Setup the game
-    Scene *scene = prepareScene();
+    Scene *scene = prepareScene(app->renderer);
     if (!scene) {
         App_free(app);
         return 1;

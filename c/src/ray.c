@@ -238,10 +238,10 @@ void doRays(Rays *self, float playerX, float playerY, float playerRotation) {
         castRay(ray, stripID, playerX, playerY, RAY_VERTICAL, &verticalResult);
 
         if (!horizontalResult.hit) {
-            horizontalResult.distance = 999999999.999;
+            horizontalResult.distance = FLT_MAX;
         }
         if (!verticalResult.hit) {
-            verticalResult.distance = 999999999.999;
+            verticalResult.distance = FLT_MAX;
         }
 
         if (horizontalResult.distance < verticalResult.distance) {
