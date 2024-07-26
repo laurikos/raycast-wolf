@@ -117,6 +117,10 @@ void drawTextureBuffer(SDL_Renderer* renderer, SDL_Texture* texture, Uint32* tex
 
 void generateWallProjection(Scene* scene) {
     const Uint32 wallcolor = 0xAB8211FF;
+    const Uint32 wallcolorShaded = 0x453508FF;
+    const Uint32 ceilingColor = 0x98C7EDFF;
+    const Uint32 floorColor = 0x534B54FF;
+
     int x;
     for (x = 0; x < scene->rays->numRays; x++) {
         Ray* ray = &scene->rays->rays[x];
@@ -144,6 +148,19 @@ void generateWallProjection(Scene* scene) {
 
         for (int y = renderWallStartY; y < renderWallEndY; y++) {
             scene->textureBuffer[y * SCREEN_WIDTH + x] = wallcolor;
+            if (ray->hitVertical) {
+                scene->textureBuffer[y * SCREEN_WIDTH + x] = wallcolorShaded;
+            }
+        }
+
+        // ceiling:
+        for (int y = 0; y < renderWallStartY; y++) {
+            scene->textureBuffer[y * SCREEN_WIDTH + x] = ceilingColor;
+        }
+
+        // floor:
+        for (int y = renderWallEndY; y < SCREEN_HEIGHT; y++) {
+            scene->textureBuffer[y * SCREEN_WIDTH + x] = floorColor;
         }
     }
 }
