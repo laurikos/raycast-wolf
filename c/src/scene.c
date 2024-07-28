@@ -8,6 +8,7 @@
 
 #include "defs.h"
 #include "map.h"
+#include "naive_texture.h"
 #include "player.h"
 #include "ray.h"
 
@@ -49,8 +50,9 @@ Scene* prepareScene(SDL_Renderer* renderer) {
 
     scene->textureBuffer = textureBuffer;
 
-    scene->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-                                       SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+    scene->texture =
+        SDL_CreateTexture(renderer, /*SDL_PIXELFORMAT_RGBA8888*/ SDL_PIXELFORMAT_ARGB8888,
+                          SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
     if (!scene->texture) {
         const char* error = SDL_GetError();
         fprintf(stderr, "SDL_CreateTexture() failed: %s\n", error);
@@ -61,6 +63,31 @@ Scene* prepareScene(SDL_Renderer* renderer) {
         return NULL;
     }
 
+    // NaiveTexture* wallTexture = NaiveTexture_newWallTexture(TILE_SIZE, TILE_SIZE);
+    // if (!wallTexture) {
+    //     fprintf(stderr, "prepareScene::NaiveTexture_newWallTexture() failed\n");
+    //     playerFree(player);
+    //     Rays_free(rays);
+    //     free(textureBuffer);
+    //     SDL_DestroyTexture(scene->texture);
+    //     free(scene);
+    //     return NULL;
+    // }
+
+    // scene->wallTexture = wallTexture;
+
+    PremadeTextures* textures = PremadeTextures_new();
+    if (!textures) {
+        fprintf(stderr, "prepareScene::PremadeTextures_new() failed\n");
+        playerFree(player);
+        Rays_free(rays);
+        free(textureBuffer);
+        SDL_DestroyTexture(scene->texture);
+        free(scene);
+        return NULL;
+    }
+    scene->textures = textures;
+
     return scene;
 }
 
@@ -68,6 +95,8 @@ void destroyScene(Scene* scene) {
     playerFree(scene->player);
     Rays_free(scene->rays);
     free(scene->textureBuffer);
+    // NaiveTexture_free(scene->wallTexture);
+    PremadeTextures_free(scene->textures);
     SDL_DestroyTexture(scene->texture);
     free(scene);
 }
@@ -79,10 +108,6 @@ void clearTextureBuffer(Uint32* const textureBuffer, const Uint32 color) {
         // If I wanna test something ...
         // int x = i % SCREEN_WIDTH;
         // int y = i / SCREEN_HEIGHT;
-
-        // if (x == y) {
-        //     textureBuffer[i] = 0xFF1333FF;
-        // }
     }
 }
 
@@ -116,26 +141,18 @@ void drawTextureBuffer(SDL_Renderer* renderer, SDL_Texture* texture, Uint32* tex
 }
 
 void generateWallProjection(Scene* scene) {
-    const Uint32 wallcolor = 0xAB8211FF;
-    const Uint32 wallcolorShaded = 0x453508FF;
-    const Uint32 ceilingColor = 0x98C7EDFF;
-    const Uint32 floorColor = 0x534B54FF;
+    const Uint32 ceilingColor = 0xFF98C7ED;
+    const Uint32 floorColor = 0xFF534B54;
 
     int x;
     for (x = 0; x < scene->rays->numRays; x++) {
         Ray* ray = &scene->rays->rays[x];
 
         // correct the fish eye effect
-        // const correctedAngle = ray.rayAngle - player.rotationAngle;
-        // const correctedDistance = rayDistance * Math.cos(correctedAngle);
-
         const float correctedAngle = ray->angle - scene->player->rotation;
         const float correctedDistance = ray->distance * cosf(correctedAngle);
 
         // get the distance and the height of the wall to be projected
-        // const distanceProjectionPlane = (WINDOW_WIDTH / 2) / Math.tan(FOV_ANGLE / 2);
-        // const projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjectionPlane;
-
         float distanceProjectionPlane = (SCREEN_WIDTH / 2.0f) / tanf(FOV_ANGLE / 2);
         float projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjectionPlane;
 
@@ -146,11 +163,37 @@ void generateWallProjection(Scene* scene) {
         int renderWallEndY = (SCREEN_HEIGHT / 2) + (wallStripHeight / 2);
         renderWallEndY = renderWallEndY > SCREEN_HEIGHT ? SCREEN_HEIGHT : renderWallEndY;
 
+        int wallTextureOffsetY = 0;
+        int wallTextureOffsetX = 0;
+
+        if (ray->hitVertical) {
+            wallTextureOffsetX = (int)ray->hitY % TILE_SIZE;
+        } else {
+            wallTextureOffsetX = (int)ray->hitX % TILE_SIZE;
+        }
+
         for (int y = renderWallStartY; y < renderWallEndY; y++) {
-            scene->textureBuffer[y * SCREEN_WIDTH + x] = wallcolor;
-            if (ray->hitVertical) {
-                scene->textureBuffer[y * SCREEN_WIDTH + x] = wallcolorShaded;
+            const int distanceFromTop = y + (wallStripHeight / 2) - (SCREEN_HEIGHT / 2);
+
+            wallTextureOffsetY = distanceFromTop * ((float)TILE_SIZE / wallStripHeight);
+
+            const int textureIdx = ray->hit - 1;
+            const Uint32* texture = scene->textures->data[textureIdx];
+            if (texture == NULL) {
+                printf("Premade texture in scene->textures->data[%d] is NULL\n", textureIdx);
+                continue;
             }
+
+            const int textureLocation = wallTextureOffsetY * TILE_SIZE + wallTextureOffsetX;
+            if (textureLocation < 0 || textureLocation >= TILE_SIZE * TILE_SIZE) {
+                printf("Texture location out of bounds: %d (tex_idx: %d)\n", textureLocation,
+                       textureIdx);
+                continue;
+            }
+
+            const Uint32 wallTextureColor = texture[textureLocation];
+
+            scene->textureBuffer[y * SCREEN_WIDTH + x] = wallTextureColor;
         }
 
         // ceiling:

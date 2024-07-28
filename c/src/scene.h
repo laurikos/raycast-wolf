@@ -5,6 +5,7 @@
 #include <SDL2/SDL_stdinc.h>
 
 #include "app.h"
+#include "naive_texture.h"
 #include "player.h"
 #include "ray.h"
 
@@ -13,6 +14,8 @@ typedef struct {
     Rays *rays;
     Uint32 *textureBuffer;
     SDL_Texture *texture;
+    // NaiveTexture *wallTexture;
+    PremadeTextures *textures;
 } Scene;
 
 Scene *prepareScene(SDL_Renderer *renderer);
