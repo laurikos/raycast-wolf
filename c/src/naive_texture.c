@@ -4,7 +4,7 @@
 
 #include "premade_textures.h"
 
-NaiveTexture *NaiveTexture_new(int width, int height, Uint32 *data) {
+NaiveTexture *NaiveTexture_new(int width, int height, uint32_t *data) {
     NaiveTexture *texture = malloc(sizeof(NaiveTexture));
     texture->width = width;
     texture->height = height;
@@ -18,10 +18,10 @@ void NaiveTexture_free(NaiveTexture *texture) {
 }
 
 NaiveTexture *NaiveTexture_newWallTexture(int width, int height) {
-    const Uint32 wallcolor = 0xAB8211FF;
-    const Uint32 black = 0x000000FF;
+    const uint32_t wallcolor = 0xAB8211FF;
+    const uint32_t black = 0x000000FF;
 
-    Uint32 *data = malloc(sizeof(Uint32) * width * height);
+    uint32_t *data = malloc(sizeof(uint32_t) * width * height);
     if (!data) {
         fprintf(stderr, "NaiveTexture_newWallTexture() malloc failed\n");
         return NULL;
@@ -51,14 +51,14 @@ PremadeTextures *PremadeTextures_new() {
         return NULL;
     }
 
-    textures->data[0] = (Uint32 *)REDBRICK_TEXTURE;
-    textures->data[1] = (Uint32 *)PURPLESTONE_TEXTURE;
-    textures->data[2] = (Uint32 *)MOSSYSTONE_TEXTURE;
-    textures->data[3] = (Uint32 *)GRAYSTONE_TEXTURE;
-    textures->data[4] = (Uint32 *)COLORSTONE_TEXTURE;
-    textures->data[5] = (Uint32 *)BLUESTONE_TEXTURE;
-    textures->data[6] = (Uint32 *)WOOD_TEXTURE;
-    textures->data[7] = (Uint32 *)EAGLE_TEXTURE;
+    textures->data[0] = (uint32_t *)REDBRICK_TEXTURE;
+    textures->data[1] = (uint32_t *)PURPLESTONE_TEXTURE;
+    textures->data[2] = (uint32_t *)MOSSYSTONE_TEXTURE;
+    textures->data[3] = (uint32_t *)GRAYSTONE_TEXTURE;
+    textures->data[4] = (uint32_t *)COLORSTONE_TEXTURE;
+    textures->data[5] = (uint32_t *)BLUESTONE_TEXTURE;
+    textures->data[6] = (uint32_t *)WOOD_TEXTURE;
+    textures->data[7] = (uint32_t *)EAGLE_TEXTURE;
 
     return textures;
 }

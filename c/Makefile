@@ -9,6 +9,11 @@ CFLAGS ?= -Wall -Wextra -pedantic -g -std=c11
 
 LDFLAGS += -lSDL2 -lm
 
+# Use lld if clang is the compiler
+ifeq ($(CC),clang)
+    LDFLAGS += -fuse-ld=lld
+endif
+
 # Define the binary target and directories
 TARGET := bin/raycast
 SRC_DIR := src
@@ -30,7 +35,7 @@ all: $(TARGET)
 # Rule to link the program
 $(TARGET): $(OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Rule to compile the source files
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)

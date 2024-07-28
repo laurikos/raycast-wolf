@@ -39,7 +39,7 @@ Scene* prepareScene(SDL_Renderer* renderer) {
 
     scene->rays = rays;
 
-    Uint32* textureBuffer = malloc(sizeof(Uint32) * SCREEN_WIDTH * SCREEN_HEIGHT);
+    uint32_t* textureBuffer = malloc(sizeof(uint32_t) * SCREEN_WIDTH * SCREEN_HEIGHT);
     if (!textureBuffer) {
         fprintf(stderr, "prepareScene() malloc texture buffer failed\n");
         playerFree(player);
@@ -101,7 +101,7 @@ void destroyScene(Scene* scene) {
     free(scene);
 }
 
-void clearTextureBuffer(Uint32* const textureBuffer, const Uint32 color) {
+void clearTextureBuffer(uint32_t* const textureBuffer, const uint32_t color) {
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
         textureBuffer[i] = color;
 
@@ -111,12 +111,12 @@ void clearTextureBuffer(Uint32* const textureBuffer, const Uint32 color) {
     }
 }
 
-void drawTextureBuffer(SDL_Renderer* renderer, SDL_Texture* texture, Uint32* textureBuffer) {
+void drawTextureBuffer(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t* textureBuffer) {
     // SDL Documents that this will work but is a slow operation
     // that docs say is good for rendering static textures
     // https://wiki.libsdl.org/SDL2/SDL_UpdateTexture
     // ---------------------------------------------------------------------------------------
-    // int res = SDL_UpdateTexture(texture, NULL, textureBuffer, SCREEN_WIDTH * sizeof(Uint32));
+    // int res = SDL_UpdateTexture(texture, NULL, textureBuffer, SCREEN_WIDTH * sizeof(uint32_t));
     // if (res != 0) {
     //     fprintf(stderr, "drawTextureBuffer() failed: %s\n", SDL_GetError());
     // }
@@ -134,15 +134,15 @@ void drawTextureBuffer(SDL_Renderer* renderer, SDL_Texture* texture, Uint32* tex
     int pitch;
 
     SDL_LockTexture(texture, NULL, &pixels, &pitch);
-    memcpy(pixels, textureBuffer, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Uint32));
+    memcpy(pixels, textureBuffer, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(uint32_t));
     SDL_UnlockTexture(texture);
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
 }
 
 void generateWallProjection(Scene* scene) {
-    const Uint32 ceilingColor = 0xFF98C7ED;
-    const Uint32 floorColor = 0xFF534B54;
+    const uint32_t ceilingColor = 0xFF98C7ED;
+    const uint32_t floorColor = 0xFF534B54;
 
     int x;
     for (x = 0; x < scene->rays->numRays; x++) {
@@ -178,7 +178,7 @@ void generateWallProjection(Scene* scene) {
             wallTextureOffsetY = distanceFromTop * ((float)TILE_SIZE / wallStripHeight);
 
             const int textureIdx = ray->hit - 1;
-            const Uint32* texture = scene->textures->data[textureIdx];
+            const uint32_t* texture = scene->textures->data[textureIdx];
             if (texture == NULL) {
                 printf("Premade texture in scene->textures->data[%d] is NULL\n", textureIdx);
                 continue;
@@ -191,7 +191,7 @@ void generateWallProjection(Scene* scene) {
                 continue;
             }
 
-            const Uint32 wallTextureColor = texture[textureLocation];
+            const uint32_t wallTextureColor = texture[textureLocation];
 
             scene->textureBuffer[y * SCREEN_WIDTH + x] = wallTextureColor;
         }
@@ -209,7 +209,7 @@ void generateWallProjection(Scene* scene) {
 }
 
 void drawScene(Scene* scene, SDL_Renderer* renderer) {
-    const Uint32 clearColor = 0x000000FF;
+    const uint32_t clearColor = 0x000000FF;
 
     clearTextureBuffer(scene->textureBuffer, clearColor);
     generateWallProjection(scene);

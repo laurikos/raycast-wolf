@@ -12,7 +12,7 @@
 typedef struct {
     Player *player;
     Rays *rays;
-    Uint32 *textureBuffer;
+    uint32_t *textureBuffer;
     SDL_Texture *texture;
     // NaiveTexture *wallTexture;
     PremadeTextures *textures;

@@ -6,14 +6,14 @@
 typedef struct {
     int width;
     int height;
-    Uint32 *data;
+    uint32_t *data;
 } NaiveTexture;
 
 NaiveTexture *NaiveTexture_newWallTexture(int width, int height);
 void NaiveTexture_free(NaiveTexture *texture);
 
 typedef struct {
-    Uint32 *data[8];
+    uint32_t *data[8];
 } PremadeTextures;
 
 PremadeTextures *PremadeTextures_new();
