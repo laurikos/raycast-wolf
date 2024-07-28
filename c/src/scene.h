@@ -2,7 +2,7 @@
 #define _SCENE_H_
 
 #include <SDL2/SDL_render.h>
-#include <SDL2/SDL_stdinc.h>
+#include <stdint.h>
 
 #include "app.h"
 #include "naive_texture.h"
@@ -14,7 +14,6 @@ typedef struct {
     Rays *rays;
     uint32_t *textureBuffer;
     SDL_Texture *texture;
-    // NaiveTexture *wallTexture;
     PremadeTextures *textures;
 } Scene;
 

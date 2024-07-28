@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
-#include <SDL2/SDL_stdinc.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -63,19 +63,6 @@ Scene* prepareScene(SDL_Renderer* renderer) {
         return NULL;
     }
 
-    // NaiveTexture* wallTexture = NaiveTexture_newWallTexture(TILE_SIZE, TILE_SIZE);
-    // if (!wallTexture) {
-    //     fprintf(stderr, "prepareScene::NaiveTexture_newWallTexture() failed\n");
-    //     playerFree(player);
-    //     Rays_free(rays);
-    //     free(textureBuffer);
-    //     SDL_DestroyTexture(scene->texture);
-    //     free(scene);
-    //     return NULL;
-    // }
-
-    // scene->wallTexture = wallTexture;
-
     PremadeTextures* textures = PremadeTextures_new();
     if (!textures) {
         fprintf(stderr, "prepareScene::PremadeTextures_new() failed\n");
@@ -95,7 +82,6 @@ void destroyScene(Scene* scene) {
     playerFree(scene->player);
     Rays_free(scene->rays);
     free(scene->textureBuffer);
-    // NaiveTexture_free(scene->wallTexture);
     PremadeTextures_free(scene->textures);
     SDL_DestroyTexture(scene->texture);
     free(scene);
