@@ -9,7 +9,6 @@
 
 #include "defs.h"
 #include "map.h"
-// #include "naive_texture.h"
 #include "player.h"
 #include "ray.h"
 
@@ -51,9 +50,8 @@ Scene* prepareScene(SDL_Renderer* renderer) {
 
     scene->textureBuffer = textureBuffer;
 
-    scene->texture = SDL_CreateTexture(
-        renderer, /*SDL_PIXELFORMAT_RGBA8888*/ /*SDL_PIXELFORMAT_ARGB8888*/
-        SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+    scene->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888,
+                                       SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
     if (!scene->texture) {
         const char* error = SDL_GetError();
         fprintf(stderr, "SDL_CreateTexture() failed: %s\n", error);
@@ -63,18 +61,6 @@ Scene* prepareScene(SDL_Renderer* renderer) {
         free(scene);
         return NULL;
     }
-
-    // PremadeTextures* textures = PremadeTextures_new();
-    // if (!textures) {
-    //     fprintf(stderr, "prepareScene::PremadeTextures_new() failed\n");
-    //     playerFree(player);
-    //     Rays_free(rays);
-    //     free(textureBuffer);
-    //     SDL_DestroyTexture(scene->texture);
-    //     free(scene);
-    //     return NULL;
-    // }
-    // scene->textures = textures;
 
     TextureManager* textures = TextureManager_new();
     if (!textures) {
@@ -95,7 +81,6 @@ void destroyScene(Scene* scene) {
     playerFree(scene->player);
     Rays_free(scene->rays);
     free(scene->textureBuffer);
-    // PremadeTextures_free(scene->textures);
     TextureManager_free(scene->textures);
     SDL_DestroyTexture(scene->texture);
     free(scene);
@@ -141,7 +126,7 @@ void drawTextureBuffer(SDL_Renderer* renderer, SDL_Texture* texture, uint32_t* t
 }
 
 void generateWallProjection(Scene* scene) {
-    const uint32_t ceilingColor = 0xFF98C7ED;
+    const uint32_t ceilingColor = 0xFFEDC798;
     const uint32_t floorColor = 0xFF534B54;
 
     int x;
@@ -178,7 +163,6 @@ void generateWallProjection(Scene* scene) {
             wallTextureOffsetY = distanceFromTop * ((float)TILE_SIZE / wallStripHeight);
 
             const int textureIdx = ray->hit - 1;
-            // const uint32_t* texture = scene->textures->data[textureIdx];
             const uint32_t* texture = scene->textures->textures[textureIdx]->data;
             if (texture == NULL) {
                 printf("Premade texture in scene->textures->data[%d] is NULL\n", textureIdx);

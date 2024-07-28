@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 #include "app.h"
-// #include "naive_texture.h"
 #include "player.h"
 #include "ray.h"
 #include "texture.h"
@@ -16,7 +15,6 @@ typedef struct {
     uint32_t *textureBuffer;
     SDL_Texture *texture;
     TextureManager *textures;
-    // PremadeTextures *textures;
 } Scene;
 
 Scene *prepareScene(SDL_Renderer *renderer);
