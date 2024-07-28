@@ -7,7 +7,7 @@ CFLAGS ?= -Wall -Wextra -pedantic -g -std=c11
 # CFLAGS += -fsanitize=address
 # LDFLAGS += -fsanitize=address
 
-LDFLAGS += -lSDL2 -lm
+LDFLAGS += -lSDL2 -lSDL2_image -lm
 
 # Use lld if clang is the compiler
 ifeq ($(CC),clang)

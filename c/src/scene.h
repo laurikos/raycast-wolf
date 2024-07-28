@@ -5,16 +5,18 @@
 #include <stdint.h>
 
 #include "app.h"
-#include "naive_texture.h"
+// #include "naive_texture.h"
 #include "player.h"
 #include "ray.h"
+#include "texture.h"
 
 typedef struct {
     Player *player;
     Rays *rays;
     uint32_t *textureBuffer;
     SDL_Texture *texture;
-    PremadeTextures *textures;
+    TextureManager *textures;
+    // PremadeTextures *textures;
 } Scene;
 
 Scene *prepareScene(SDL_Renderer *renderer);
