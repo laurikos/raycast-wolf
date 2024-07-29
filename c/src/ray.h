@@ -39,5 +39,7 @@ void Rays_free(Rays *self);
 
 void doRays(Rays *self, float playerX, float playerY, float playerRotation);
 void drawRays(Rays *self, SDL_Renderer *renderer, float playerX, float playerY);
+void drawRaysFB(Rays *self, uint32_t *frameBuffer, int fbWidth, int fbHeight, float playerX,
+                float playerY);
 
 #endif  // _RAY_H_

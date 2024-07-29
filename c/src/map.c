@@ -67,8 +67,8 @@ void drawMinimap(uint32_t *frameBuffer, int mapX, int mapY, int mapWidth, int ma
 
             frameBufferDrawRect(frameBuffer, (int)floor(tileX * MINIMAP_SCALE_FACTOR),
                                 (int)floor(tileY * MINIMAP_SCALE_FACTOR),
-                                (int)floor((TILE_SIZE + 10) * MINIMAP_SCALE_FACTOR),
-                                (int)floor((TILE_SIZE + 10) * MINIMAP_SCALE_FACTOR), tileColor);
+                                (int)floor((TILE_SIZE + 5) * MINIMAP_SCALE_FACTOR),
+                                (int)floor((TILE_SIZE + 5) * MINIMAP_SCALE_FACTOR), tileColor);
         }
     }
 }

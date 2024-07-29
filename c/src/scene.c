@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
+#include <complex.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
@@ -196,17 +197,29 @@ void generateWallProjection(Scene* scene) {
 void drawScene(Scene* scene, SDL_Renderer* renderer) {
     const uint32_t clearColor = 0xFF000000;
 
+    // Initialize the texture buffer with a clear color
     clearTextureBuffer(scene->textureBuffer, clearColor);
+
+    // ---------------------------------------------------------------------------------------
+
+    // generate the wall projection
+    // this sets the texture buffer with the wall projection
+    // computed from the rays casted from the player
     generateWallProjection(scene);
 
+    // ---------------------------------------------------------------------------------------
     // Draw the minimap:
+
     // for now the textureBuffer is actually only function arg that gets used...
     drawMinimap(scene->textureBuffer, 0, 0, 300, 300);
-    drawPlayerOnMinimap(scene->player, scene->textureBuffer);
-    // drawMap(renderer);
-    // drawPlayer(scene->player, renderer);
-    // drawRays(scene->rays, renderer, scene->player->x, scene->player->y);
 
+    drawPlayerOnMinimap(scene->player, scene->textureBuffer);
+
+    drawRaysFB(scene->rays, scene->textureBuffer, 0, 0, scene->player->x, scene->player->y);
+
+    // ---------------------------------------------------------------------------------------
+
+    // And finally draw the texture buffer to the screen:
     drawTextureBuffer(renderer, scene->texture, scene->textureBuffer);
 }
 

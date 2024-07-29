@@ -282,3 +282,22 @@ void drawRays(Rays *self, SDL_Renderer *renderer, float playerX, float playerY) 
                   255);
     }
 }
+
+void drawRaysFB(Rays *self, uint32_t *frameBuffer, int fbWidth, int fbHeight, float playerX,
+                float playerY) {
+    (void)fbWidth;
+    (void)fbHeight;
+
+    const uint32_t rayColor = 0xFF77A7EE;
+
+    for (int i = 0; i < self->numRays; i++) {
+        Ray *ray = &self->rays[i];
+
+        int x1 = (int)(playerX * MINIMAP_SCALE_FACTOR);
+        int y1 = (int)(playerY * MINIMAP_SCALE_FACTOR);
+        int x2 = (int)(ray->hitX * MINIMAP_SCALE_FACTOR);
+        int y2 = (int)(ray->hitY * MINIMAP_SCALE_FACTOR);
+
+        frameBufferDrawLine(frameBuffer, x1, y1, x2, y2, rayColor);
+    }
+}
