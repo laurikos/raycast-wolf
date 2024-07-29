@@ -51,3 +51,24 @@ int getMapTileAtIndex(int row, int col) {
 int getMapTileAtCoords(float x, float y) {
     return getMapTileAtIndex((int)floor(y / TILE_SIZE), (int)floor(x / TILE_SIZE));
 }
+
+void drawMinimap(uint32_t *frameBuffer, int mapX, int mapY, int mapWidth, int mapHeight) {
+    (void)mapX;
+    (void)mapY;
+    (void)mapWidth;
+    (void)mapHeight;
+
+    for (int y = 0; y < MAP_NUM_ROWS; y++) {
+        for (int x = 0; x < MAP_NUM_COLS; x++) {
+            int tileX = x * TILE_SIZE;
+            int tileY = y * TILE_SIZE;
+
+            int tileColor = getMapTileAtIndex(y, x) != 0 ? 0xFFFFFFFF : 0x00000000;
+
+            frameBufferDrawRect(frameBuffer, (int)floor(tileX * MINIMAP_SCALE_FACTOR),
+                                (int)floor(tileY * MINIMAP_SCALE_FACTOR),
+                                (int)floor((TILE_SIZE + 10) * MINIMAP_SCALE_FACTOR),
+                                (int)floor((TILE_SIZE + 10) * MINIMAP_SCALE_FACTOR), tileColor);
+        }
+    }
+}

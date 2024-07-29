@@ -42,6 +42,15 @@ void drawPlayer(Player* player, SDL_Renderer* renderer) {
     //           (player->y + sin(player->rotation) * 40) * MINIMAP_SCALE_FACTOR, 180, 40, 5, 255);
 }
 
+void drawPlayerOnMinimap(Player* player, uint32_t* textureBuffer) {
+    const float playerCenterX = player->x - player->w / 2;
+    const float playerCenterY = player->y - player->h / 2;
+
+    frameBufferDrawRect(textureBuffer, playerCenterX * MINIMAP_SCALE_FACTOR,
+                        playerCenterY * MINIMAP_SCALE_FACTOR, player->w * MINIMAP_SCALE_FACTOR,
+                        player->h * MINIMAP_SCALE_FACTOR, 0xFF0000FF);
+}
+
 void updatePlayer(Player* player, int turnDirection, int moveDirection, float deltaTime) {
     player->turnDirection = turnDirection;
     player->moveDirection = moveDirection;

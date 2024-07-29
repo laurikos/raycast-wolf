@@ -193,22 +193,21 @@ void generateWallProjection(Scene* scene) {
     }
 }
 
-// void setPixel(Scene* scene, int x, int y, uint32_t color) {
-//     scene->textureBuffer[y * SCREEN_WIDTH + x] = color;
-// }
-
 void drawScene(Scene* scene, SDL_Renderer* renderer) {
-    const uint32_t clearColor = 0x000000FF;
+    const uint32_t clearColor = 0xFF000000;
 
     clearTextureBuffer(scene->textureBuffer, clearColor);
     generateWallProjection(scene);
-    drawTextureBuffer(renderer, scene->texture, scene->textureBuffer);
 
     // Draw the minimap:
-    // TODO: Change this:
-    drawMap(renderer);
-    drawPlayer(scene->player, renderer);
-    drawRays(scene->rays, renderer, scene->player->x, scene->player->y);
+    // for now the textureBuffer is actually only function arg that gets used...
+    drawMinimap(scene->textureBuffer, 0, 0, 300, 300);
+    drawPlayerOnMinimap(scene->player, scene->textureBuffer);
+    // drawMap(renderer);
+    // drawPlayer(scene->player, renderer);
+    // drawRays(scene->rays, renderer, scene->player->x, scene->player->y);
+
+    drawTextureBuffer(renderer, scene->texture, scene->textureBuffer);
 }
 
 void updateScene(Scene* scene, App* app) {

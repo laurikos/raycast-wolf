@@ -21,8 +21,6 @@ Scene *prepareScene(SDL_Renderer *renderer);
 void destroyScene(Scene *scene);
 
 void drawScene(Scene *scene, SDL_Renderer *renderer);
-// void setPixel(Scene *scene, int x, int y, uint32_t color);
-
 void updateScene(Scene *scene, App *app);
 
 #endif  // _SCENE_H_

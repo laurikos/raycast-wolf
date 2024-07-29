@@ -24,6 +24,7 @@ typedef struct {
 Player* createPlayer(float x, float y, float w, float h, float rotationSpeed, float moveSpeed);
 void playerFree(Player* player);
 void drawPlayer(Player* player, SDL_Renderer* renderer);
+void drawPlayerOnMinimap(Player* player, uint32_t* textureBuffer);
 void updatePlayer(Player* player, int turnDirection, int moveDirection, float deltaTime);
 
 #endif  // _PLAYER_H_
