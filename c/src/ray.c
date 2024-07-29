@@ -9,14 +9,12 @@
 #include "map.h"
 #include "stdio.h"
 
-static float normalizeAngle(float angle) {
-    float normalizedAngle = remainderf(angle, (2 * PI));
+static void normalizeAngle(float *angle) {
+    *angle = remainderf(*angle, (2 * PI));
 
-    if (normalizedAngle < 0) {
-        normalizedAngle = (2 * PI) + normalizedAngle;
+    if (*angle < 0) {
+        *angle = (2 * PI) + *angle;
     }
-
-    return normalizedAngle;
 }
 
 static float distanceBetweenPoints(float x1, float y1, float x2, float y2) {
@@ -223,8 +221,8 @@ void doRays(Rays *self, float playerX, float playerY, float playerRotation) {
         Ray *ray = &self->rays[stripID];
 
         rayAngle = playerRotation + atan((stripID - (float)NUM_RAYS / 2) / distanceProjectionPlane);
-
-        ray->angle = normalizeAngle(rayAngle);
+        normalizeAngle(&rayAngle);
+        ray->angle = rayAngle;
 
         setRayDirection(ray);
 
