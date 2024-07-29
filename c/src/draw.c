@@ -80,3 +80,20 @@ void frameBufferDrawLine(uint32_t *frameBuffer, int x1, int y1, int x2, int y2, 
         }
     }
 }
+
+// --------------------------------------------------------------------------------------------
+
+void changeColorIntensity(uint32_t *color, float intensity) {
+    // notice that our pixel format is SDL_PIXELFORMAT_ABGR8888
+
+    uint8_t a = (*color & 0xFF000000) >> 24;
+    uint8_t b = (*color & 0x00FF0000) >> 16;
+    uint8_t g = (*color & 0x0000FF00) >> 8;
+    uint8_t r = (*color & 0x000000FF);
+
+    r = (uint8_t)(r * intensity);
+    g = (uint8_t)(g * intensity);
+    b = (uint8_t)(b * intensity);
+
+    *color = (a << 24) | (b << 16) | (g << 8) | r;
+}

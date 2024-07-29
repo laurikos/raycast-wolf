@@ -15,4 +15,8 @@ void setPixel(uint32_t *frameBuffer, int x, int y, uint32_t color);
 void frameBufferDrawRect(uint32_t *frameBuffer, int x, int y, int w, int h, uint32_t color);
 void frameBufferDrawLine(uint32_t *frameBuffer, int x1, int y1, int x2, int y2, uint32_t color);
 
+// --------------------------------------------------------------------------------------------
+// Utility:
+void changeColorIntensity(uint32_t *color, float intensity);
+
 #endif  // _DRAW_H_

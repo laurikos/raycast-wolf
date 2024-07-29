@@ -9,6 +9,7 @@
 #include <time.h>
 
 #include "defs.h"
+#include "draw.h"
 #include "map.h"
 #include "player.h"
 #include "ray.h"
@@ -177,7 +178,16 @@ void generateWallProjection(Scene* scene) {
                 continue;
             }
 
-            const uint32_t wallTextureColor = textureData[textureLocation];
+            uint32_t wallTextureColor = textureData[textureLocation];
+            // and change the color based on the distance:
+            // intensity should be between 0.0 and 1.0
+            // lets make it porportional to the distance:
+            int maxDistance =
+                (MAP_NUM_COLS > MAP_NUM_ROWS ? MAP_NUM_COLS : MAP_NUM_ROWS) * TILE_SIZE;
+            // add just some buffer to max distance - otherwise the walls will be too dark
+            maxDistance += 100;
+            float intensity = 1.0f - (correctedDistance / maxDistance);
+            changeColorIntensity(&wallTextureColor, intensity);
 
             scene->textureBuffer[y * SCREEN_WIDTH + x] = wallTextureColor;
         }
