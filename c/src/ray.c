@@ -53,6 +53,7 @@ void setRayDirection(Ray *ray) {
 
 void castRay(Ray *ray, int stripID, float playerX, float playerY, RayIntercept interceptType,
              RayResult *result) {
+    (void)stripID;
     float xIntercept, yIntercept;
     float xStep, yStep;
 
@@ -118,7 +119,6 @@ void castRay(Ray *ray, int stripID, float playerX, float playerY, RayIntercept i
             // we minus one (pixel) from the y coordinate of the grid line
             // and this is again because we the negative numbers are going up
             // because the map is int[][] and the y coordinate is converted to row number.
-            // float yToCheck = nextHorizontalTileY + ((ray->direction & FACING_UP) ? -1 : 0);
             float yToCheck = nextHorizontalTileY;
             if (ray->direction & FACING_UP) {
                 yToCheck -= 1;
@@ -212,6 +212,7 @@ void Rays_free(Rays *self) {
 
 void doRays(Rays *self, float playerX, float playerY, float playerRotation) {
     float rayAngle = playerRotation - (FOV_ANGLE / 2);
+    const float distanceProjectionPlane = (SCREEN_WIDTH / 2.0f) / tanf(FOV_ANGLE / 2.0f);
 
     int stripID;
 
@@ -220,6 +221,8 @@ void doRays(Rays *self, float playerX, float playerY, float playerRotation) {
 
     for (stripID = 0; stripID < self->numRays; stripID++) {
         Ray *ray = &self->rays[stripID];
+
+        rayAngle = playerRotation + atan((stripID - (float)NUM_RAYS / 2) / distanceProjectionPlane);
 
         ray->angle = normalizeAngle(rayAngle);
 
@@ -266,7 +269,7 @@ void doRays(Rays *self, float playerX, float playerY, float playerRotation) {
                 ray->angle, TO_DEGREES(ray->angle), ray->direction);
         }
 
-        rayAngle += FOV_ANGLE / NUM_RAYS;
+        // rayAngle += FOV_ANGLE / NUM_RAYS;
     }
 }
 

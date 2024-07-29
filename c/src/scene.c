@@ -11,6 +11,7 @@
 #include "map.h"
 #include "player.h"
 #include "ray.h"
+#include "texture.h"
 
 Scene* prepareScene(SDL_Renderer* renderer) {
     Scene* scene = malloc(sizeof(Scene));
@@ -138,8 +139,8 @@ void generateWallProjection(Scene* scene) {
         const float correctedDistance = ray->distance * cosf(correctedAngle);
 
         // get the distance and the height of the wall to be projected
-        float distanceProjectionPlane = (SCREEN_WIDTH / 2.0f) / tanf(FOV_ANGLE / 2);
-        float projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjectionPlane;
+        const float distanceProjectionPlane = (SCREEN_WIDTH / 2.0f) / tanf(FOV_ANGLE / 2);
+        const float projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjectionPlane;
 
         int wallStripHeight = (int)projectedWallHeight;
         int renderWallStartY = (SCREEN_HEIGHT / 2) - (wallStripHeight / 2);
@@ -148,8 +149,13 @@ void generateWallProjection(Scene* scene) {
         int renderWallEndY = (SCREEN_HEIGHT / 2) + (wallStripHeight / 2);
         renderWallEndY = renderWallEndY > SCREEN_HEIGHT ? SCREEN_HEIGHT : renderWallEndY;
 
+        // get properties for getting the texture for each pixel:
         int wallTextureOffsetY = 0;
         int wallTextureOffsetX = 0;
+
+        const int textureIdx = ray->hit - 1;
+        const Texture* texture = scene->textures->textures[textureIdx];
+        const uint32_t* textureData = scene->textures->textures[textureIdx]->data;
 
         if (ray->hitVertical) {
             wallTextureOffsetX = (int)ray->hitY % TILE_SIZE;
@@ -157,26 +163,20 @@ void generateWallProjection(Scene* scene) {
             wallTextureOffsetX = (int)ray->hitX % TILE_SIZE;
         }
 
+        // do the drawing:
         for (int y = renderWallStartY; y < renderWallEndY; y++) {
             const int distanceFromTop = y + (wallStripHeight / 2) - (SCREEN_HEIGHT / 2);
 
-            wallTextureOffsetY = distanceFromTop * ((float)TILE_SIZE / wallStripHeight);
+            wallTextureOffsetY = distanceFromTop * ((float)texture->height / wallStripHeight);
 
-            const int textureIdx = ray->hit - 1;
-            const uint32_t* texture = scene->textures->textures[textureIdx]->data;
-            if (texture == NULL) {
-                printf("Premade texture in scene->textures->data[%d] is NULL\n", textureIdx);
-                continue;
-            }
-
-            const int textureLocation = wallTextureOffsetY * TILE_SIZE + wallTextureOffsetX;
-            if (textureLocation < 0 || textureLocation >= TILE_SIZE * TILE_SIZE) {
+            const int textureLocation = wallTextureOffsetY * texture->width + wallTextureOffsetX;
+            if (textureLocation < 0 || textureLocation >= texture->width * texture->height) {
                 printf("Texture location out of bounds: %d (tex_idx: %d)\n", textureLocation,
                        textureIdx);
                 continue;
             }
 
-            const uint32_t wallTextureColor = texture[textureLocation];
+            const uint32_t wallTextureColor = textureData[textureLocation];
 
             scene->textureBuffer[y * SCREEN_WIDTH + x] = wallTextureColor;
         }
