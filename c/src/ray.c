@@ -111,8 +111,8 @@ void castRay(Ray *ray, int stripID, float playerX, float playerY, RayIntercept i
     float nextVerticalTileY = yIntercept;
 
     if (interceptType == RAY_HORIZONTAL) {
-        while (nextHorizontalTileX >= 0 && nextHorizontalTileX <= SCREEN_WIDTH &&
-               nextHorizontalTileY >= 0 && nextHorizontalTileY <= SCREEN_HEIGHT) {
+        while (nextHorizontalTileX >= 0 && nextHorizontalTileX <= MAP_NUM_COLS * TILE_SIZE &&
+               nextHorizontalTileY >= 0 && nextHorizontalTileY <= MAP_NUM_ROWS * TILE_SIZE) {
             float xToCheck = nextHorizontalTileX;
             // with horizontal intercept I have to check the y coordinate inside the cell
             // rather than the y coordinate of the grid line. So if we are facing up
@@ -136,8 +136,8 @@ void castRay(Ray *ray, int stripID, float playerX, float playerY, RayIntercept i
             }
         }
     } else {
-        while (nextVerticalTileX >= 0 && nextVerticalTileX <= SCREEN_WIDTH &&
-               nextVerticalTileY >= 0 && nextVerticalTileY <= SCREEN_HEIGHT) {
+        while (nextVerticalTileX >= 0 && nextVerticalTileX <= MAP_NUM_COLS * TILE_SIZE &&
+               nextVerticalTileY >= 0 && nextVerticalTileY <= MAP_NUM_ROWS * TILE_SIZE) {
             float xToCheck = nextVerticalTileX;
             if (ray->direction & FACING_LEFT) {
                 xToCheck -= 1;

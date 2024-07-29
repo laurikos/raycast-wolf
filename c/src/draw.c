@@ -1,6 +1,9 @@
 #include "draw.h"
 
 #include <SDL2/SDL_render.h>
+#include <stdio.h>
+
+#include "defs.h"
 
 void drawRect(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b, int a) {
     SDL_Rect rect;
@@ -25,4 +28,24 @@ void drawLineF(SDL_Renderer *renderer, float x1, float y1, float x2, float y2, i
     SDL_SetRenderDrawBlendMode(renderer, a < 255 ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
     SDL_RenderDrawLineF(renderer, x1, y1, x2, y2);
+}
+
+// --------------------------------------------------------------------------------------------
+// Draw to frame buffer:
+
+void setPixel(uint32_t *frameBuffer, int x, int y, uint32_t color) {
+    frameBuffer[y * SCREEN_WIDTH + x] = color;
+}
+
+void frameBufferDrawRect(uint32_t *frameBuffer, int x, int y, int w, int h, uint32_t color) {
+    for (int i = x; i < x + w; i++) {
+        for (int j = y; j < y + h; j++) {
+            if (i < 0 || i >= SCREEN_WIDTH || j < 0 || j >= SCREEN_HEIGHT) {
+                printf("drawRect() out of bounds (x: %d, y:%d)\n", i, j);
+                continue;
+            }
+
+            setPixel(frameBuffer, i, j, color);
+        }
+    }
 }

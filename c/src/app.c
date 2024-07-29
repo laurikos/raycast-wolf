@@ -5,8 +5,6 @@
 #include <SDL2/SDL_video.h>
 #include <stdlib.h>
 
-#include "defs.h"
-
 App *App_new() {
     App *self = malloc(sizeof(App));
     if (self == NULL) {
@@ -55,8 +53,41 @@ void App_initSDL(App *self) {
 
     self->sdlInitialized = 1;
 
+    static int display_in_use = 0; /* Only using first display */
+
+    int i, display_mode_count;
+    SDL_DisplayMode mode;
+    Uint32 f;
+
+    SDL_Log("SDL_GetNumVideoDisplays(): %i", SDL_GetNumVideoDisplays());
+
+    display_mode_count = SDL_GetNumDisplayModes(display_in_use);
+    if (display_mode_count < 1) {
+        SDL_Log("SDL_GetNumDisplayModes failed: %s", SDL_GetError());
+        return;
+    }
+    SDL_Log("SDL_GetNumDisplayModes: %i", display_mode_count);
+
+    for (i = 0; i < display_mode_count; ++i) {
+        if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0) {
+            SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+            return;
+        }
+        f = mode.format;
+
+        SDL_Log("Mode %i\tbpp %i\t%s\t%i x %i", i, SDL_BITSPERPIXEL(f), SDL_GetPixelFormatName(f),
+                mode.w, mode.h);
+    }
+
+    SDL_DisplayMode dm;
+    SDL_GetCurrentDisplayMode(display_in_use, &dm);
+    SDL_Log("Current display mode: %s %d x %d", SDL_GetPixelFormatName(dm.format), dm.w, dm.h);
+
+    int screenWidth = dm.w;
+    int screenHeight = dm.h;
+
     self->window = SDL_CreateWindow("Raycast", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                    SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
+                                    screenWidth, screenHeight, windowFlags);
     if (self->window == NULL) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         SDL_Quit();

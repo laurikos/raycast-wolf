@@ -142,7 +142,7 @@ void generateWallProjection(Scene* scene) {
         const float distanceProjectionPlane = (SCREEN_WIDTH / 2.0f) / tanf(FOV_ANGLE / 2);
         const float projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjectionPlane;
 
-        int wallStripHeight = (int)projectedWallHeight;
+        const int wallStripHeight = (int)projectedWallHeight;
         int renderWallStartY = (SCREEN_HEIGHT / 2) - (wallStripHeight / 2);
         renderWallStartY = renderWallStartY < 0 ? 0 : renderWallStartY;
 
@@ -193,6 +193,10 @@ void generateWallProjection(Scene* scene) {
     }
 }
 
+// void setPixel(Scene* scene, int x, int y, uint32_t color) {
+//     scene->textureBuffer[y * SCREEN_WIDTH + x] = color;
+// }
+
 void drawScene(Scene* scene, SDL_Renderer* renderer) {
     const uint32_t clearColor = 0x000000FF;
 
@@ -201,6 +205,7 @@ void drawScene(Scene* scene, SDL_Renderer* renderer) {
     drawTextureBuffer(renderer, scene->texture, scene->textureBuffer);
 
     // Draw the minimap:
+    // TODO: Change this:
     drawMap(renderer);
     drawPlayer(scene->player, renderer);
     drawRays(scene->rays, renderer, scene->player->x, scene->player->y);

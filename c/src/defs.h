@@ -15,12 +15,16 @@
 #define MAP_NUM_ROWS 13
 #define MAP_NUM_COLS 20
 
-// or "720p" : 	1280 × 720 maybe?
-#define SCREEN_HEIGHT (MAP_NUM_ROWS * TILE_SIZE)
-#define SCREEN_WIDTH (MAP_NUM_COLS * TILE_SIZE)
+// "720p" : 	1280 × 720 maybe?
+// #define SCREEN_HEIGHT 720
+// #define SCREEN_WIDTH 1280
+
+// Window is created by SDL_GetCurrentDisplayMode
+// but the pixels drawn are 1920x1080
+#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1920
 
 #define MINIMAP_SCALE_FACTOR 0.3
-// #define MINIMAP_SCALE_FACTOR 1.0
 
 #define FOV_ANGLE (60 * (PI / 180))
 #define NUM_RAYS SCREEN_WIDTH

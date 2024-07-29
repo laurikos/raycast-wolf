@@ -36,6 +36,10 @@ void render(App *app, Scene *scene) {
 }
 
 int main(int argc, char *argv[]) {
+    // until I need to use argc and argv:
+    (void)argc;
+    (void)argv;
+
     App *app = App_new();
     App_initSDL(app);
 
@@ -46,7 +50,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    printf("Game started\n\tSCREEN_WIDTH: %d\n\tSCREEN_HEIGHT: %d\n", SCREEN_WIDTH, SCREEN_HEIGHT);
+    printf("Game started\n\tnum_pixels_width: %d\n\tnum_pixels_height: %d\n", SCREEN_WIDTH,
+           SCREEN_HEIGHT);
 
     long frameStart;
     long frameTime;
@@ -68,8 +73,6 @@ int main(int argc, char *argv[]) {
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
         }
-        // ---------------------------
-        // SDL_Delay(1);
 
         app->deltaTime = UPDATE_RATE * (SDL_GetTicks() - frameStart);
     }
